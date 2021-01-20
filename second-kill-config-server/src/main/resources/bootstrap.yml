@@ -1,0 +1,20 @@
+server:
+  port: 9090
+spring:
+  application:
+    name: second-kill-config-server #应用名称
+  cloud:
+    config:
+      server:
+        git: #github配置
+          uri: https://github.com/majian000/second-kill
+          search-paths: second-kill-config/config  #配置文件所在目录
+          username:
+          password:
+        native:  #本地配置
+          search-locations: classpath:/config
+  profiles:
+    active: native
+## github超时 所以切换成本地配置
+#  profiles:
+#    active: git

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.second.kill.order.mapper.OrderMapper">
+
+    <resultMap id="orderMap" type="com.second.kill.order.entity.Order" >
+        <id property="id" jdbcType="BIGINT"  column="id" />
+        <result property="order_no" jdbcType="VARCHAR" column="orderNo" />
+        <result property="user_id" jdbcType="BIGINT" column="userId" />
+        <result property="order_amount" jdbcType="DECIMAL" column="orderAmount" />
+        <result property="pay_amount" jdbcType="DECIMAL" column="payAmount" />
+        <result property="total_amount" jdbcType="DECIMAL" column="totalAmount" />
+        <result property="pay_status" jdbcType="SMALLINT" column="payStatus" />
+        <result property="trade_status" jdbcType="SMALLINT" column="tradeStatus" />
+        <result property="pay_type" jdbcType="SMALLINT" column="payType" />
+        <result property="outer_trade_no" jdbcType="VARCHAR" column="outerTradeNo" />
+        <result property="best_date" jdbcType="TIMESTAMP" column="bestDate" />
+        <result property="pay_date" jdbcType="TIMESTAMP" column="payDate" />
+        <result property="remark" jdbcType="VARCHAR" column="remark" />
+        <result property="create_date" jdbcType="TIMESTAMP" column="createDate" />
+    </resultMap>
+
+
+
+    <insert id="insert" parameterType="com.second.kill.order.entity.Order" useGeneratedKeys="true" keyProperty="id" >
+        insert into sk_order(order_no,user_id,order_amount,pay_amount,total_amount,
+        pay_status,trade_status,pay_type,outer_trade_no,best_date,pay_date,remark,create_date)
+
+         values(#{orderNo},#{userId},#{orderAmount},#{payAmount},#{totalAmount},#{payStatus},
+         #{tradeStatus},#{payType},#{outerTradeNo},#{bestDate},#{payDate},#{remark},#{createDate})
+
+    </insert>
+
+</mapper>

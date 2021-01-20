@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.second.kill.product.mapper.ProductMapper">
+
+    <resultMap id="productMap" type="com.second.kill.product.entity.Product" >
+        <id property="id" jdbcType="BIGINT"  column="id" />
+        <result property="categoryId" jdbcType="BIGINT" column="categoryId" />
+        <result property="name" jdbcType="VARCHAR" column="name" />
+        <result property="attributes" jdbcType="VARCHAR" column="attributes" />
+        <result property="create_date" jdbcType="TIMESTAMP" column="create_date" />
+    </resultMap>
+
+    <select id="queryAllList" resultMap="productMap" parameterType="com.second.kill.product.entity.Product">
+        select * from sk_product
+    </select>
+
+</mapper>

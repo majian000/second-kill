@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.second.kill.product.mapper.ProductSkuMapper">
+
+    <resultMap id="productSkuMap" type="com.second.kill.product.entity.ProductSku" >
+        <id property="id" jdbcType="BIGINT"  column="id" />
+        <result property="product_id" jdbcType="BIGINT" column="productId" />
+        <result property="attributes" jdbcType="VARCHAR" column="attributes" />
+        <result property="price" jdbcType="DOUBLE" column="price" />
+        <result property="stock_num" jdbcType="BIGINT" column="stockNum" />
+        <result property="remark" jdbcType="VARCHAR" column="remark" />
+        <result property="status" jdbcType="SMALLINT" column="status" />
+        <result property="create_date" jdbcType="TIMESTAMP" column="create_date" />
+    </resultMap>
+
+    <select id="queryList" resultMap="productSkuMap" parameterType="com.second.kill.product.entity.ProductSku">
+        select sps.* from sk_product_sku sps
+        <where>
+            1=1
+
+            <if test="id!=null">
+                and sps.id = #{id}
+            </if>
+
+            <if test="status!=null">
+                 and sps.status = #{status}
+            </if>
+
+        </where>
+    </select>
+
+
+    <select id="queryBySkuIdForUpdate" resultMap="productSkuMap" parameterType="java.lang.Long">
+        select * from sk_product_sku where id=#{skuId} for update
+    </select>
+
+    <update id="inventoryReduction" parameterType="java.lang.Long">
+        update sk_product_sku set stock_num=stock_num-1 where id=#{skuId}
+    </update>
+
+
+    <update id="restoreStock" parameterType="java.lang.Long">
+        update sk_product_sku set stock_num=stock_num+1 where id=#{skuId}
+    </update>
+
+</mapper>

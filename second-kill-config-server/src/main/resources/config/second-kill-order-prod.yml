@@ -1,0 +1,11 @@
+server:
+  port: 8084
+  servlet:
+    context-path: /second-kill-order
+spring:
+  application:
+    name: second-kill-order #应用名称
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8081/eureka

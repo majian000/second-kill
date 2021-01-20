@@ -1,0 +1,26 @@
+spring:
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: prod
+  application:
+    name: second-kill-order
+  cloud:
+    config: #指定配置中心服务端
+      uri: http://localhost:9090
+      label: master
+      profile: prod
+
+
+---
+spring:
+  profiles: dev
+  application:
+    name: second-kill-order
+  cloud:
+    config: #指定配置中心服务端
+      uri: http://localhost:9090
+      label: master
+      profile: dev

@@ -1,0 +1,28 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /second-kill-web
+spring:
+  application:
+    name: second-kill-web #应用名称
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8081/eureka
+
+feign:
+  hystrix:
+    enabled: true
+  client:
+    config:
+      default:
+        connectTimeout: 5000
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+
+

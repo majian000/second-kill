@@ -1,0 +1,25 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: second-kill #应用名称
+eureka:
+  instance:
+    hostname: second-kill-eureka
+    appname: second-kill
+  client:
+    registerWithEureka: false
+    fetchRegistry: false #禁止注册自己
+    serviceUrl:
+      defaultZone: http://localhost:8081/eureka
+  server:
+    enableSelfPreservation: false
+    evictionIntervalTimerInMs: 4000
+management:
+  endpoint:
+    shutdown:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"

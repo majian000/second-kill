@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.second.kill.order.mapper.OrderItemMapper">
+
+    <resultMap id="orderItemMap" type="com.second.kill.order.entity.OrderItem" >
+        <id property="id" jdbcType="BIGINT"  column="id" />
+        <result property="order_no" jdbcType="VARCHAR" column="orderNo" />
+        <result property="order_id" jdbcType="INTEGER" column="orderId" />
+        <result property="sku_id" jdbcType="INTEGER" column="skuId" />
+        <result property="delivery_status" jdbcType="SMALLINT" column="deliveryStatus" />
+        <result property="seller_status" jdbcType="SMALLINT" column="sellerStatus" />
+        <result property="buyer_status" jdbcType="SMALLINT" column="buyerStatus" />
+        <result property="product_num" jdbcType="INTEGER" column="productNum" />
+        <result property="product_price" jdbcType="DECIMAL" column="productPrice" />
+        <result property="order_item_amount" jdbcType="DECIMAL" column="orderItemAmount" />
+        <result property="delivery_money" jdbcType="DECIMAL" column="deliveryMoney" />
+        <result property="delivery_receive_time" jdbcType="TIMESTAMP" column="deliveryReceiveTime" />
+        <result property="delivery_finish_time" jdbcType="TIMESTAMP" column="deliveryFinishTime" />
+        <result property="seller_finish_time" jdbcType="TIMESTAMP" column="sellerFinishTime" />
+        <result property="buyer_finish_time" jdbcType="TIMESTAMP" column="buyerFinishTime" />
+        <result property="remark" jdbcType="VARCHAR" column="remark" />
+        <result property="create_date" jdbcType="TIMESTAMP" column="create_date" />
+
+    </resultMap>
+
+
+
+    <insert id="insert" parameterType="com.second.kill.order.entity.OrderItem"  useGeneratedKeys="true" keyProperty="id">
+        insert into sk_order_item(user_id,order_no,order_id,sku_id,delivery_status,seller_status,buyer_status,
+        product_num,product_price,order_item_amount,delivery_money,delivery_receive_time,delivery_finish_time,
+        seller_finish_time,buyer_finish_time,remark,create_date)
+
+         values(#{userId},#{orderNo},#{orderId},#{skuId},#{deliveryStatus},#{sellerStatus},#{buyerStatus},
+         #{productNum},#{productPrice},#{orderItemAmount},#{deliveryMoney},#{deliveryReceiveTime},#{deliveryFinishTime},
+         #{sellerFinishTime},#{buyerFinishTime},#{remark},#{createDate})
+
+    </insert>
+
+</mapper>

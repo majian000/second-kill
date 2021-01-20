@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!--在这里继承了spring boot -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.2.RELEASE</version>
+        <relativePath/>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+
+
+    <description>spring cloud的商城秒杀系统</description>
+
+    <groupId>com.second.kill</groupId>
+    <artifactId>second-kill</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+
+
+    <modules>
+        <!--公共模块 -->
+        <module>second-kill-common</module>
+        <!--服务中心-->
+        <module>second-kill-eureka</module>
+        <!--订单服务 -->
+        <module>second-kill-order</module>
+        <!--处理前端请求 -->
+        <module>second-kill-web</module>
+        <!--商品服务 -->
+        <module>second-kill-product</module>
+        <!--配置中心-配置文件 -->
+        <module>second-kill-config</module>
+        <!-- 配置中心服务端-->
+        <module>second-kill-config-server</module>
+    </modules>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+            <version>1.18.8</version>
+        </dependency>
+
+    </dependencies>
+
+</project>
