@@ -10,6 +10,10 @@ public interface OrderService {
 
     public int create(Order order);
 
+    public int deleteByOrderNo(String orderNo);
+
+    public Order createOrder(Map<String,Object> paramMap);
+
     public ResultObjectVO createOrderAndOrderItem(Map<String,Object> paramMap);
 
     public Order findByOrderNo(String orderNo);

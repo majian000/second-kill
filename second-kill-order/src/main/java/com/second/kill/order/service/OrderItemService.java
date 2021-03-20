@@ -10,6 +10,8 @@ public interface OrderItemService {
 
     public int create(OrderItem orderItem);
 
+    public OrderItem createOrderItem(String skuId,Order order);
+
 
     public OrderItem findByOrderNo(String orderNo);
 
