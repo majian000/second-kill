@@ -47,9 +47,9 @@ public class FeignProductSkuServiceFallbackFactory implements FallbackFactory<Fe
                     resultObjectVO.setMsg("超时重试");
                     return resultObjectVO;
                 }
-                logger.warn("扣库存服务 params:"+JSONObject.toJSON(paramMap));
+                logger.warn("下单服务失败 params:"+JSONObject.toJSON(paramMap));
                 resultObjectVO.setCode(ResultObjectVO.FAILD);
-                resultObjectVO.setMsg("购买失败,请重试!");
+                resultObjectVO.setMsg("超时重试");
                 return resultObjectVO;
             }
 

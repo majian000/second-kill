@@ -9,6 +9,7 @@ import com.second.kill.order.entity.OrderItem;
 import com.second.kill.order.mapper.OrderMapper;
 import com.second.kill.order.service.OrderItemService;
 import com.second.kill.order.service.OrderService;
+import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderItemService orderItemService;
 
+    @Resource
+    private RocketMQTemplate rocketMQTemplate;
 
 
     @Override

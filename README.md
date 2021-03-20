@@ -1,7 +1,7 @@
 # second-kill
 
 #### 介绍
-    采用技术spring cloud、spring config、lombok、eureka、hystrix、kafka、redis、mysql实现的秒杀系统(
+    采用技术spring cloud、spring config、lombok、eureka、hystrix、rocketmq、redis、mysql实现的秒杀系统(
     数据访问量在百万级左右,高并发下保证数据一致性)
 
 #### 软件架构
@@ -65,7 +65,7 @@
 1.秒杀接口
     使用前请先设置redis缓存 商品活动状态
 
-    POST http://localhost:8083/second-kill-web/sk/secondKill
+    POST http://localhost:8083/second-kill-web/product/secondKill
     { "skuId":"1", "userId":"1" }
 
 

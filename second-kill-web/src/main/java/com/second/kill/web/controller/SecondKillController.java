@@ -2,35 +2,27 @@ package com.second.kill.web.controller;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.second.kill.common.feign.service.product.FeignProductMessageService;
 import com.second.kill.common.lock.RedisLock;
-import com.second.kill.common.message.MessageTopicConstant;
-import com.second.kill.common.message.order.CreateOrderMessage;
-import com.second.kill.common.message.product.InventoryReductionMessage;
-import com.second.kill.common.persistence.entity.EventPublish;
-import com.second.kill.common.persistence.service.EventPublishService;
+import com.second.kill.common.rocketmq.message.product.InventoryReductionMessage;
 import com.second.kill.common.util.RedisStock;
 import com.second.kill.common.vo.ResultListVO;
 import com.second.kill.common.vo.ResultObjectVO;
+import com.second.kill.common.feign.service.order.FeignOrderMessageService;
 import com.second.kill.common.feign.service.product.FeignProductSkuService;
 import com.second.kill.common.vo.ResultVO;
 import com.second.kill.web.service.SecondKillService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
-/**
- * 秒杀服务
- */
 @RestController
-@RequestMapping("/sk")
+@RequestMapping("/product")
 public class SecondKillController {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -38,6 +30,8 @@ public class SecondKillController {
     @Autowired
     private FeignProductSkuService feignProductSkuService;
 
+    @Autowired
+    private FeignOrderMessageService feignOrderService;
 
     @Autowired
     private RedisLock redisLock;
@@ -49,11 +43,7 @@ public class SecondKillController {
     private SecondKillService secondKillService;
 
     @Autowired
-    private KafkaTemplate kafkaTemplate;
-
-
-    @Autowired
-    private EventPublishService eventPublishService;
+    private FeignProductMessageService feignProductMessageService;
 
 
 
@@ -79,7 +69,7 @@ public class SecondKillController {
     @ResponseBody
     public ResultObjectVO secondKill(@RequestBody Map<String,Object> paramMap)
     {
-        ResultObjectVO resultObjectVO = new ResultObjectVO(ResultVO.FAILD,"请重试");
+        ResultObjectVO resultObjectVO = new ResultObjectVO();
         if(paramMap!=null) {
             logger.info("点击秒杀 param : "+ JSONObject.toJSON(paramMap));
             if(paramMap.get("skuId")==null)
@@ -99,7 +89,6 @@ public class SecondKillController {
             String userId=String.valueOf(paramMap.get("userId"));
             String lockKey = RedisStock.getGlobalSecondKillKey(appId,skuId);
             String stockKey = RedisStock.getStockKey(appId,skuId);
-            String orderNo = UUID.randomUUID().toString().replace("-","");
 
 
             //TODO:控制访问人数,比如只允许1000人访问,其余所有人将不执行后面代码
@@ -148,60 +137,24 @@ public class SecondKillController {
                     return resultObjectVO;
                 }
 
-
-                //扣redis库存
-                redisTemplate.opsForValue().set(stockKey, String.valueOf(stock.longValue() - 1));
-
-                logger.info("get product userId:"+userId+ " skuId:"+skuId);
                 String globalTransactionId = UUID.randomUUID().toString().replace("-","");
 
-                //异步发送消息 数据入库
 
-                //发送扣库存消息
+                //扣库存
                 InventoryReductionMessage inventoryReductionMessage = new InventoryReductionMessage();
                 inventoryReductionMessage.setAppId(appId);
                 inventoryReductionMessage.setUserId(userId);
-                inventoryReductionMessage.setOrderNo(orderNo);
+                inventoryReductionMessage.setOrderNo(UUID.randomUUID().toString().replace("-",""));
                 //保存全局事务
                 inventoryReductionMessage.setGlobalTransactionId(globalTransactionId);
                 inventoryReductionMessage.setSkuId(skuId);
 
-                //保存发消息记录到数据库
-                EventPublish inventorReductionMessagePersistence = new EventPublish();
-                inventorReductionMessagePersistence.setCreateDate(new Date());
-                inventorReductionMessagePersistence.setBusinessId(orderNo);
-                inventorReductionMessagePersistence.setRemark("扣库存");
-                inventorReductionMessagePersistence.setTransactionId(globalTransactionId);
-                inventorReductionMessagePersistence.setPayload(JSONObject.toJSONString(inventoryReductionMessage));
-                inventorReductionMessagePersistence.setStatus((short)0); //待发送
-                inventorReductionMessagePersistence.setType(MessageTopicConstant.sk_inventory_reduction.name());
-                eventPublishService.insert(inventorReductionMessagePersistence);
+                resultObjectVO = feignProductMessageService.postInventoryReductionMessage(inventoryReductionMessage);
+                if(resultObjectVO.getCode().intValue()== ResultVO.FAILD)
+                {
+                    redisLock.unLock(lockKey, userId);
+                }
 
-                inventoryReductionMessage.setLocalTransactionMessageId(String.valueOf(inventorReductionMessagePersistence.getId()));
-
-                kafkaTemplate.send(MessageTopicConstant.sk_inventory_reduction.name(),JSONObject.toJSONString(inventoryReductionMessage));
-
-
-                //发送创建订单消息
-                CreateOrderMessage createOrderMessage = new CreateOrderMessage();
-                BeanUtils.copyProperties(inventoryReductionMessage,createOrderMessage);
-
-                //保存发消息记录到数据库
-                EventPublish orderMessagePersistence = new EventPublish();
-                orderMessagePersistence.setCreateDate(new Date());
-                orderMessagePersistence.setBusinessId(orderNo);
-                orderMessagePersistence.setRemark("创建订单");
-                orderMessagePersistence.setTransactionId(globalTransactionId);
-                orderMessagePersistence.setPayload(JSONObject.toJSONString(createOrderMessage));
-                orderMessagePersistence.setStatus((short)0); //待发送
-                orderMessagePersistence.setType(MessageTopicConstant.sk_create_order.name());
-                eventPublishService.insert(orderMessagePersistence);
-                createOrderMessage.setLocalTransactionMessageId(String.valueOf(orderMessagePersistence.getId()));
-
-                kafkaTemplate.send(MessageTopicConstant.sk_create_order.name(),JSONObject.toJSONString(createOrderMessage));
-
-                redisLock.unLock(lockKey, userId);
-                resultObjectVO.setMsg("恭喜抢到了");
             }catch (Exception e)
             {
                 redisLock.unLock(lockKey, userId);

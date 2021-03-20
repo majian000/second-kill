@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.second.kill.common.persistence.mapper.MQTransactionMapper">
+
+    <resultMap id="mqTransactionMap" type="com.second.kill.common.persistence.entity.MQTransaction" >
+        <id property="id" jdbcType="BIGINT"  column="id" />
+        <result property="businessId" jdbcType="VARCHAR" column="business_id" />
+        <result property="transactionId" jdbcType="VARCHAR" column="transaction_id" />
+        <result property="tableName" jdbcType="VARCHAR" column="table_name" />
+        <result property="remark" jdbcType="VARCHAR" column="remark" />
+        <result property="createDate" jdbcType="TIMESTAMP" column="create_date" />
+    </resultMap>
+
+    <select id="queryList" resultMap="mqTransactionMap" parameterType="com.second.kill.common.persistence.entity.MQTransaction">
+        select smt.* from sk_mq_transaction smt
+        <where>
+            1=1
+
+            <if test="id!=null">
+                and smt.id = #{id}
+            </if>
+
+            <if test="transactionId!=null">
+                 and smt.transaction_id = #{transactionId}
+            </if>
+
+            <if test="businessId!=null and businessId!=''">
+                and smt.business_id = #{businessId}
+            </if>
+
+            <if test="tableName!=null and tableName!=''">
+                and smt.table_name = #{tableName}
+            </if>
+            <if test="remark!=null and remark!=''">
+                and smt.remark = #{remark}
+            </if>
+        </where>
+    </select>
+
+
+
+
+
+
+    <insert id="insert" parameterType="com.second.kill.common.persistence.entity.MQTransaction" useGeneratedKeys="true" keyProperty="id" >
+        insert into sk_mq_transaction(business_id,transaction_id,table_name,remark,create_date)
+         values(#{businessId},#{transactionId},#{tableName},#{remark},#{createDate})
+
+    </insert>
+
+
+</mapper>

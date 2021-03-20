@@ -1,6 +1,5 @@
 package com.second.kill.web.app;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -13,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableEurekaClient
-@MapperScan({"com.second.kill.common.persistence.mapper"})
 @EnableFeignClients(basePackages = "com.second.kill")
 @ComponentScan("com.second.kill")
 public class WebApplication {
