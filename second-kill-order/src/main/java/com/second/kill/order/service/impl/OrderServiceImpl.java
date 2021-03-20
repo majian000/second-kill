@@ -9,7 +9,6 @@ import com.second.kill.order.entity.OrderItem;
 import com.second.kill.order.mapper.OrderMapper;
 import com.second.kill.order.service.OrderItemService;
 import com.second.kill.order.service.OrderService;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +33,50 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private OrderItemService orderItemService;
 
-    @Resource
-    private RocketMQTemplate rocketMQTemplate;
 
 
     @Override
     public int create(Order order) {
         return orderMapper.insert(order);
+    }
+
+    @Override
+    public int deleteByOrderNo(String orderNo) {
+        return orderMapper.deleteByOrderNo(orderNo);
+    }
+
+    @Transactional
+    @Override
+    public Order createOrder(Map<String, Object> paramMap) {
+        String skuId = String.valueOf(paramMap.get("skuId"));
+        String userId = String.valueOf(paramMap.get("userId"));
+        String orderNo =String.valueOf(paramMap.get("orderNo"));
+
+
+        Order orderPersistence = orderMapper.findByOrderNo(orderNo);
+
+        if(orderPersistence==null) {
+            //订单创建
+            Order order = new Order();
+            order.setCreateDate(new Date());
+            order.setUserId(Long.parseLong(userId));
+            order.setPayType(-1);
+            order.setOrderNo(orderNo);
+            order.setPayStatus(0);  //支付状态
+            order.setOrderAmount(0D); //商品总金额
+            order.setTotalAmount(0D); //商品最终金额(折扣算完)
+            order.setTradeStatus(0); //交易状态
+            order.setPayAmount(0D);
+
+            this.create(order);
+            if (order.getId() == null) {
+                logger.info("下单失败: param:" + JSONObject.toJSON(paramMap));
+                throw new IllegalArgumentException("创建订单失败");
+            }
+
+            orderPersistence = order;
+        }
+        return orderPersistence;
     }
 
     @Transactional
@@ -110,10 +146,10 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        if(new Random().nextInt(100)%2==0)
-        {
-            throw new IllegalArgumentException("手动测试异常");
-        }
+//        if(new Random().nextInt(100)%2==0)
+//        {
+//            throw new IllegalArgumentException("手动测试异常");
+//        }
 
         return resultObjectVO;
     }

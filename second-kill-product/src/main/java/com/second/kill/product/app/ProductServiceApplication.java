@@ -10,10 +10,14 @@ import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@MapperScan("com.second.kill.product.mapper")
+@MapperScan({"com.second.kill.product.mapper","com.second.kill.common.persistence.mapper"})
 @ComponentScan("com.second.kill")
 public class ProductServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(ProductServiceApplication.class, args);
     }
+
+
+
+
 }

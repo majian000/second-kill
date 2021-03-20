@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@MapperScan("com.second.kill.order.mapper")
+@MapperScan({"com.second.kill.order.mapper","com.second.kill.common.persistence.mapper"})
 @EnableFeignClients(basePackages = "com.second.kill")
 @ComponentScan("com.second.kill")
 public class OrderServiceApplication {
