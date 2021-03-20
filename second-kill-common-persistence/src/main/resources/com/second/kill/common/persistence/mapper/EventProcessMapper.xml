@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org/DTD Mapper 3.0" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.second.kill.common.persistence.mapper.EventProcessMapper">
+
+    <resultMap id="eventMessageProcessMap" type="com.second.kill.common.persistence.entity.EventProcess" >
+        <id property="id" jdbcType="BIGINT"  column="id" />
+        <result property="type" jdbcType="VARCHAR" column="type" />
+        <result property="businessId" jdbcType="VARCHAR" column="business_id" />
+        <result property="transactionId" jdbcType="VARCHAR" column="transaction_id" />
+        <result property="status" jdbcType="INTEGER" column="status" />
+        <result property="payload" jdbcType="VARCHAR" column="payload" />
+        <result property="type" jdbcType="VARCHAR" column="type" />
+        <result property="remark" jdbcType="VARCHAR" column="remark" />
+        <result property="createDate" jdbcType="TIMESTAMP" column="create_date" />
+    </resultMap>
+
+    <select id="queryList" resultMap="eventMessageProcessMap" parameterType="com.second.kill.common.persistence.entity.EventProcess">
+        select sep.* from sk_event_process sep
+        <where>
+            1=1
+
+            <if test="id!=null">
+                and sep.id = #{id}
+            </if>
+
+            <if test="transactionId!=null">
+                and sep.transaction_id = #{transactionId}
+            </if>
+
+            <if test="businessId!=null and businessId!=''">
+                and sep.business_id = #{businessId}
+            </if>
+
+            <if test="tableName!=null and tableName!=''">
+                and sep.table_name = #{tableName}
+            </if>
+
+            <if test="type!=null and type!=''">
+                and sep.type = #{type}
+            </if>
+
+            <if test="status!=null">
+                and sep.status = #{status}
+            </if>
+            <if test="remark!=null and remark!=''">
+                and sep.remark = #{remark}
+            </if>
+        </where>
+    </select>
+
+    <select id="findById" resultMap="eventMessageProcessMap" parameterType="java.lang.Long">
+        select sep.* from sk_event_process sep
+            where 1=1 and sep.id = #{id}
+    </select>
+
+
+    <update id="updateStatus"  parameterType="com.second.kill.common.persistence.entity.EventPublish">
+        update sk_event_process  set status=#{status} where id = #{id}
+    </update>
+
+
+
+    <insert id="insert" parameterType="com.second.kill.common.persistence.entity.EventProcess" useGeneratedKeys="true" keyProperty="id" >
+        insert into sk_event_process(business_id,status,payload,transaction_id,table_name,remark,type,create_date)
+         values(#{businessId},#{status},#{payload},#{transactionId},#{tableName},#{remark},#{type},#{createDate})
+
+    </insert>
+
+
+</mapper>

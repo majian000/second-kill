@@ -18,7 +18,7 @@ public interface FeignProductSkuService {
     public ResultObjectVO inventoryReduction(@RequestParam Map<String,Object> paramMap);
 
     @RequestMapping(value = "/refersh/stock",method= RequestMethod.POST,produces = "application/json;charset=UTF-8")
-    public ResultObjectVO refershStock(@RequestParam Map<String,Object> queryMap);
+    public ResultObjectVO refershStock(@RequestParam Map<String,Object> paramMap);
 
 
 }

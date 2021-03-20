@@ -6,6 +6,5 @@ import java.util.Map;
 
 public interface SecondKillService {
 
-    public ResultVO secondKill(String stockKey,Integer stock,Map<String, Object> queryMap);
 
 }

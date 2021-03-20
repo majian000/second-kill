@@ -1,6 +1,7 @@
 package com.second.kill.order.mapper;
 
 import com.second.kill.order.entity.Order;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -15,4 +16,8 @@ public interface OrderMapper {
 
     @Select("select * from sk_order where order_no=#{orderNo}")
     public Order findByOrderNo(String orderNo);
+
+
+    @Delete("delete from sk_order where order_no=#{orderNo} ")
+    public int deleteByOrderNo(String orderNo);
 }
